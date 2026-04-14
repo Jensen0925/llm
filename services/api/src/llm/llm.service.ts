@@ -13,13 +13,14 @@ import {
   checkConstraintValidityTool,
   lookupEntityDefinitionTool,
 } from './tools/basic.tools';
+import { REQUIREMENT_SYSTEM_PROMPT } from './prompts/requirement.prompt';
 
 @Injectable()
 export class LlmService {
   private model = createChatModel();
 
   async invokeDemo(input: string): Promise<string> {
-    const systemMessage = new SystemMessage('你是一名需求结构化抽取助手');
+    const systemMessage = new SystemMessage(REQUIREMENT_SYSTEM_PROMPT);
     const humanMessage = new HumanMessage(
       `请从下面文本中抽取 action、constraints、entities：\n${input}`,
     );
@@ -30,14 +31,14 @@ export class LlmService {
 
   async streamDemo(input: string) {
     return this.model.stream([
-      new SystemMessage('你是一名需求结构化抽取助手'),
+      new SystemMessage(REQUIREMENT_SYSTEM_PROMPT),
       new HumanMessage(`请逐步分析并输出结构化抽取结果：\n${input}`),
     ]);
   }
 
   async batchDemo(inputs: string[]) {
     const messageGroups = inputs.map((input) => [
-      new SystemMessage('你是一名需求结构化抽取助手'),
+      new SystemMessage(REQUIREMENT_SYSTEM_PROMPT),
       new HumanMessage(`请抽取 action、constraints、entities：\n${input}`),
     ]);
 
@@ -76,7 +77,9 @@ export class LlmService {
     ]);
 
     const response = await modelWithTools.invoke([
-      new SystemMessage('你可以按需要调用工具来校验约束和查询实体定义。'),
+      new SystemMessage(
+        `${REQUIREMENT_SYSTEM_PROMPT}\n\n你可以按需要调用工具来校验约束和查询实体定义。`,
+      ),
       new HumanMessage(`请分析下面需求：${input}`),
     ]);
 
@@ -88,11 +91,12 @@ export class LlmService {
 
   async toolLoopDemo(input: string) {
     const tools = [checkConstraintValidityTool, lookupEntityDefinitionTool];
-    const toolMap = Object.fromEntries(tools.map((t) => [t.name, t]));
     const modelWithTools = this.model.bindTools(tools);
 
     const messages: BaseMessage[] = [
-      new SystemMessage('你可以调用工具来帮助完成需求抽取后的校验。'),
+      new SystemMessage(
+        `${REQUIREMENT_SYSTEM_PROMPT}\n\n你可以调用工具来帮助完成需求抽取后的校验。`,
+      ),
       new HumanMessage(
         `先抽取 action、constraints、entities，再按需要调用工具：${input}`,
       ),
@@ -102,9 +106,18 @@ export class LlmService {
     messages.push(firstResponse);
 
     for (const toolCall of firstResponse.tool_calls ?? []) {
-      const targetTool = toolMap[toolCall.name];
-      if (!targetTool) continue;
-      const toolResult = await targetTool.invoke(toolCall.args);
+      if (!toolCall.id) continue;
+
+      let toolResult: unknown;
+
+      if (toolCall.name === checkConstraintValidityTool.name) {
+        toolResult = await checkConstraintValidityTool.invoke(toolCall);
+      } else if (toolCall.name === lookupEntityDefinitionTool.name) {
+        toolResult = await lookupEntityDefinitionTool.invoke(toolCall);
+      } else {
+        continue;
+      }
+
       messages.push(
         new ToolMessage({
           tool_call_id: toolCall.id,

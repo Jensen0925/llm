@@ -1,32 +1,50 @@
 'use client';
 
+import { APP_NAME, type RequirementResult } from '@repo/contracts';
 import { useState } from 'react';
 
 export default function Home() {
   const [input, setInput] = useState(
-    '用户注册时必须绑定手机号，密码至少8位'
+    '用户注册时必须绑定手机号，密码至少8位',
   );
-  const [result, setResult] = useState<any>(null);
+  const [helloMessage, setHelloMessage] = useState('');
+  const [result, setResult] = useState<RequirementResult | null>(null);
+  const [error, setError] = useState('');
+
+  async function handleHello() {
+    setError('');
+    const res = await fetch('/api/hello');
+    const data = (await res.json()) as { message: string };
+    setHelloMessage(data.message);
+  }
 
   async function handleSubmit() {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/requirement/extract`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ input }),
-      }
-    );
+    setError('');
+    setResult(null);
 
-    const data = await res.json();
+    const res = await fetch('/api/requirement/extract', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ input }),
+    });
+
+    if (!res.ok) {
+      setError(`请求失败：${res.status}`);
+      return;
+    }
+
+    const data = (await res.json()) as RequirementResult;
     setResult(data);
   }
 
   return (
     <main>
-      <h1>Requirement Extract Demo</h1>
+      <h1>Hello from {APP_NAME}</h1>
+
+      <button onClick={handleHello}>调用 /hello</button>
+      {helloMessage ? <p>{helloMessage}</p> : null}
 
       <textarea
         value={input}
@@ -36,7 +54,8 @@ export default function Home() {
 
       <button onClick={handleSubmit}>提取</button>
 
-      <pre>{JSON.stringify(result, null, 2)}</pre>
+      {error ? <p>{error}</p> : null}
+      <pre>{result ? JSON.stringify(result, null, 2) : ''}</pre>
     </main>
   );
 }

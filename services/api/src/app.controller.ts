@@ -1,14 +1,10 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
-import { AppService } from './app.service';
 import { APP_NAME } from '@repo/contracts';
 import { RequirementService } from './llm/requirement.service';
 
 @Controller()
 export class AppController {
-  constructor(
-    private readonly appService: AppService,
-    private readonly requirementService: RequirementService,
-  ) { }
+  constructor(private readonly requirementService: RequirementService) {}
 
   @Get('/health')
   health() {

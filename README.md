@@ -50,14 +50,14 @@ bun install
 
 ### 2. 配置环境变量
 
-在 API 服务运行环境中配置：
+在 `services/api/.env` 中配置：
 
 ```bash
-export OPENAI_API_KEY="your-api-key"
-export OPENAI_BASE_URL="https://api.openai.com/v1" # 可选，兼容 OpenAI 的服务可修改
-export EMBEDDING_API_KEY="your-embedding-api-key"  # 可选，默认复用 OPENAI_API_KEY
-export VECTOR_DB_URL="your-vector-db-url"          # 可选
-export VECTOR_DB_API_KEY="your-vector-db-api-key"  # 可选
+OPENAI_API_KEY="your-api-key"
+OPENAI_BASE_URL="https://api.openai.com/v1" # 可选，兼容 OpenAI 的服务可修改
+EMBEDDING_API_KEY="your-embedding-api-key"  # 可选，默认复用 OPENAI_API_KEY
+VECTOR_DB_URL="your-vector-db-url"          # 可选
+VECTOR_DB_API_KEY="your-vector-db-api-key"  # 可选
 ```
 
 ### 3. 配置 LangChain
@@ -148,13 +148,15 @@ curl -X POST http://localhost:3001/requirement/extract \
 - `POST /api/langchain/chain-stream`
 - `POST /api/langchain/chain-batch`
 - `POST /api/langchain/structured`
+- `POST /api/langchain/tool-bind`
+- `POST /api/langchain/tool-loop`
 
 ## 开发说明
 
-- Web 默认通过 `NEXT_PUBLIC_API_BASE_URL` 调用 `http://localhost:3001`。
+- Web 默认通过 Next `rewrites` 将 `/api/*` 代理到 `http://localhost:3001/*`。
 - 共享包位于 `packages/contracts`，修改后会被 Web 和 API 共同使用。
 - 构建产物、依赖目录、缓存文件已通过 `.gitignore` 忽略。
-- `infra/compose` 中包含 Compose 配置，如需容器化运行，需要补齐对应 Dockerfile。
+- `infra/compose` 中包含 Compose 配置，根目录已提供 `Dockerfile.api` 与 `Dockerfile.web`。
 
 ## 许可证
 

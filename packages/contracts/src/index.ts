@@ -1,5 +1,6 @@
 import { z } from 'zod';
-export const APP_NAME = "LLM"
+
+export const APP_NAME = 'llm';
 
 export const RequirementSchema = z.object({
   input: z.string().min(1),
