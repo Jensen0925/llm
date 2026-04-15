@@ -8,6 +8,22 @@ const nextConfig: NextConfig = {
   async rewrites() {
     return [
       {
+        source: "/api/langchain/:path*",
+        destination: "http://localhost:3001/api/langchain/:path*",
+      },
+      {
+        source: "/api/memory/:path*",
+        destination: "http://localhost:3001/api/memory/:path*",
+      },
+      {
+        source: "/api/files/:path*",
+        destination: "http://localhost:3001/api/files/:path*",
+      },
+      {
+        source: "/api/embedding/:path*",
+        destination: "http://localhost:3001/api/embedding/:path*",
+      },
+      {
         source: "/api/:path*",
         destination: "http://localhost:3001/:path*",
       },

@@ -1,0 +1,15 @@
+{
+  "orderId": "EC20240315001",
+  "userId": "U10086",
+  "productId": "BT-1001",
+  "productName": "Aurora 降噪蓝牙耳机",
+  "status": "delivered",
+  "purchaseDate": "2024-03-15",
+  "deliveryDate": "2024-03-18",
+  "amount": 699,
+  "currency": "CNY",
+  "returnWindowDays": 7,
+  "currentDate": "2024-03-21",
+  "issue": "降噪效果不好",
+  "eligibleForReturn": true
+}

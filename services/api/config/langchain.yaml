@@ -1,17 +1,22 @@
 llm:
   provider: openai
-  model: gpt-4o-mini
-  temperature: 0.2
-  maxTokens: 1000
-
+  model: glm-5.1
+  maxTokens: 512
+  timeout: 30000
+  streaming: false
+  modelKwargs:
+    chat_template_kwargs:
+      enable_thinking: false
+    thinking:
+      type: disabled
 retrieval:
   enabled: false
   topK: 5
-
 tools:
-  enableConstraintCheck: true
-  enableEntityLookup: true
-
+  enabled: false
+  names: []
 features:
-  enableStructuredOutput: true
-  enableStreaming: true
+  invoke: true
+  stream: true
+  batch: true
+  batchSize: 3

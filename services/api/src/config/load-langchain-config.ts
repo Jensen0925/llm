@@ -6,8 +6,11 @@ export type LangChainAppConfig = {
   llm: {
     provider: string;
     model: string;
-    temperature: number;
+    temperature?: number;
     maxTokens: number;
+    timeout?: number;
+    streaming?: boolean;
+    modelKwargs?: Record<string, unknown>;
   };
   retrieval: {
     enabled: boolean;
