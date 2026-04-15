@@ -101,6 +101,10 @@ export class FilesystemService {
     };
   }
 
+  async writeWorkspaceContent(filePath: string, content: string) {
+    return writeFileTool.invoke({ filePath, content });
+  }
+
   private async executeToolCall(toolCall: ToolCall) {
     switch (toolCall.name) {
       case queryOrderTool.name:

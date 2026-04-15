@@ -2,6 +2,11 @@
 /dist
 /node_modules
 /build
+/models
+/models-runtime
+/models-runtime-http
+/workspace/tickets/*
+!/workspace/tickets/.gitkeep
 
 # Logs
 logs
