@@ -20,6 +20,9 @@
     }
   },
   "scripts": {
+    "db:up": "docker compose -f infra/compose/compose.yaml -f infra/compose/compose.dev.yaml up -d postgres",
+    "db:down": "docker compose -f infra/compose/compose.yaml -f infra/compose/compose.dev.yaml stop postgres",
+    "db:logs": "docker compose -f infra/compose/compose.yaml -f infra/compose/compose.dev.yaml logs -f postgres",
     "dev": "turbo run dev --parallel --filter=@repo/web --filter=@repo/api",
     "dev:web": "turbo run dev --filter=@repo/web",
     "dev:api": "turbo run dev --filter=@repo/api",

@@ -11,6 +11,7 @@ out/
 
 # Turborepo
 .turbo/
+.venv/
 
 # Test and coverage
 coverage/

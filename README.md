@@ -56,8 +56,15 @@ bun install
 OPENAI_API_KEY="your-api-key"
 OPENAI_BASE_URL="https://api.openai.com/v1" # 可选，兼容 OpenAI 的服务可修改
 EMBEDDING_API_KEY="your-embedding-api-key"  # 可选，默认复用 OPENAI_API_KEY
+DATABASE_URL="postgresql://postgres:postgres@localhost:54322/llm?sslmode=disable"
 VECTOR_DB_URL="your-vector-db-url"          # 可选
 VECTOR_DB_API_KEY="your-vector-db-api-key"  # 可选
+```
+
+本项目默认通过 Docker 启动 PostgreSQL（含 `pgvector` 扩展）：
+
+```bash
+bun run db:up
 ```
 
 ### 3. 配置 LangChain
@@ -85,6 +92,12 @@ features:
 ```
 
 ### 4. 启动开发环境
+
+先启动 PostgreSQL：
+
+```bash
+bun run db:up
+```
 
 同时启动 Web 和 API：
 
@@ -115,6 +128,9 @@ bun run dev:api
 bun run dev        # 并行启动 Web 和 API
 bun run dev:web    # 启动 Web
 bun run dev:api    # 启动 API
+bun run db:up      # 启动 PostgreSQL 容器
+bun run db:down    # 停止 PostgreSQL 容器
+bun run db:logs    # 查看 PostgreSQL 日志
 bun run build      # 构建全部包
 bun run typecheck  # TypeScript 类型检查
 bun run lint       # 代码检查
